@@ -21,11 +21,10 @@
 						 @open="handleOpen"
 						 @close="handleClose">
 					<!-- 一级菜单 -->
-					<!-- <el-submenu index="1" v-for="item in menulist" :key="item.id"> -->
-						<!-- 一级菜单模板区域 -->
-
-					<!-- </el-submenu> -->
-					<!-- <el-sub-menu index="1">
+					<!-- <el-submenu index="1" v-for="item in menulist" :key="item.id">
+						
+					</el-submenu> -->
+					<el-sub-menu index="1">
 						<template #title>
 						<el-icon><location /></el-icon>
 						<span>Navigator One</span>
@@ -54,7 +53,7 @@
 					<el-menu-item index="4">
 						<el-icon><setting /></el-icon>
 						<template #title>Navigator Four</template>
-					</el-menu-item> -->
+					</el-menu-item>
 				</el-menu>
 			</el-aside>
 			<el-container>
@@ -142,6 +141,14 @@
 	const handleClose = () => {
 		
 	}
+
+	const menuList = ref([])
+	const getMenuList = () => {
+		menuList.value = JSON.parse(localStorage.getItem('menuList'))
+		console.log(JSON.parse(localStorage.getItem('menuList')))
+		console.log(menuList.value)
+	}
+	getMenuList()
 	
 	const logout = () => {
 		store.commit('user/setToken', '')
