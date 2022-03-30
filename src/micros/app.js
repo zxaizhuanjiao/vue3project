@@ -1,8 +1,7 @@
-console.log(process.env);
 const apps = [  
   {    
     name: 'vueApp', 
-    entry: '//localhost:10001',
+    entry: '//localhost:10000',
     container: '#vue',
     activeRule: '/vue',
     sandbox: {

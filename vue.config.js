@@ -18,15 +18,17 @@ module.exports = {
       port: 8066, // 服务端口
       https: false,
       hotOnly: false,
-      // proxy: { // 设置代理
-      //   '/api': {
-      //     target: host,
-      //     changeOrigin: true,
-      //     pathRewrite: {
-      //       '/api': '/',
-      //     }
-      //   },
-      // },
+      proxy: {
+		[process.env.VUE_APP_API]: {
+			target: `${process.env.VUE_APP_PATH}:${process.env.VUE_APP_PORT}/`, // 代理到 目标路径
+			ws: true,
+			changeOrigin: true,
+			pathRewrite: {
+				['^' + process.env.VUE_APP_API]: ''
+				// '^/api': ''
+			}
+		}
+	},
     },
 	chainWebpack: config => {
 		// config.module

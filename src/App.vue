@@ -8,7 +8,7 @@
 		      <!-- 子应用容器 -->
 		<!-- <div id="vue"></div> -->
 		<el-container>
-			<el-aside :width="isCollapse ? '64px' : '200px'">
+			<el-aside :width="isCollapse ? '64px' : '200px'" v-if="token">
 				<div style="display: flex;align-items: center;justify-content: center;height: 62px;background-color: #2f3447;color: #ffffff;">
 					<h3>
 						<svg-icon icon-class="user"></svg-icon>
@@ -20,7 +20,12 @@
 						 :collapse-transition="false"
 						 @open="handleOpen"
 						 @close="handleClose">
-					<el-sub-menu index="1">
+					<!-- 一级菜单 -->
+					<!-- <el-submenu index="1" v-for="item in menulist" :key="item.id"> -->
+						<!-- 一级菜单模板区域 -->
+
+					<!-- </el-submenu> -->
+					<!-- <el-sub-menu index="1">
 						<template #title>
 						<el-icon><location /></el-icon>
 						<span>Navigator One</span>
@@ -49,13 +54,11 @@
 					<el-menu-item index="4">
 						<el-icon><setting /></el-icon>
 						<template #title>Navigator Four</template>
-					</el-menu-item>
+					</el-menu-item> -->
 				</el-menu>
 			</el-aside>
 			<el-container>
-				<el-header>
-					<!-- <a href="/index">base</a>
-					<a href="/vue">vue</a> -->
+				<el-header v-if="token">
 					<el-row>
 						<el-col>
 							<el-header class="header-cont">
@@ -117,10 +120,14 @@
 
 <script setup>
 	import { computed, ref, onMounted, nextTick } from 'vue'
-	// import { useRouter, useRoute } from 'vue-router'
 	import { useRouter } from 'vue-router'
+	import { useStore } from 'vuex'
 	
 	const router = useRouter()
+	const store = useStore()
+	const token = computed(() => {
+		return store.state.user.token;
+	})
 	
 	const transitionName = ref('slide-left')
 	const isCollapse = ref(false)
@@ -137,6 +144,9 @@
 	}
 	
 	const logout = () => {
+		store.commit('user/setToken', '')
+		store.commit('user/setUserInfo', '')
+		localStorage.clear()
 		router.push('/login')
 	}
 </script>

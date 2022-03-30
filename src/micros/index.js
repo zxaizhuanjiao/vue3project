@@ -31,24 +31,24 @@ registerMicroApps(apps, {
 });
  
 //主项目与子项目交互用的参数，子项目与主项目都可以修改此参数
-const actions = initGlobalState(state);
-actions.setGlobalState({
-    globalToken: ''
-})
-addGlobalUncaughtErrorHandler((event) => {
-    console.log(event);
-    const {
-        msg
-    } = event;
-    if (msg && msg.includes('died in status LOADING_SOURCE_CODE')) {
-        console.log('微应用加载失败，请检查应用是否可运行');
-    }
-});
+// const actions = initGlobalState(state);
+// actions.setGlobalState({
+//     globalToken: ''
+// })
+// addGlobalUncaughtErrorHandler((event) => {
+//     console.log(event);
+//     const {
+//         msg
+//     } = event;
+//     if (msg && msg.includes('died in status LOADING_SOURCE_CODE')) {
+//         console.log('微应用加载失败，请检查应用是否可运行');
+//     }
+// });
 
 export default start;
-export {
-    actions
-}
+// export {
+//     actions
+// }
 // addGlobalUncaughtErrorHandler((event) => {  
 //   console.error(event);  
 //   const { message: msg } = event  
