@@ -1,9 +1,13 @@
+console.log(process.env);
 const apps = [  
   {    
-    name: "vue-micro-app",    
-    entry: "//localhost:8081",    
-    container: "#micro-container",    
-    activeRule: "#/vue2-micro-app",  
+    name: 'vueApp', 
+    entry: '//localhost:10001',
+    container: '#vue',
+    activeRule: '/vue',
+    sandbox: {
+      strictStyleIsolation: true // 开启样式隔离
+    }
   },
 ];
 export default apps;

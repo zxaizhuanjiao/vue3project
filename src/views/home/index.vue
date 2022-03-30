@@ -107,9 +107,16 @@
 										</div>
 									</el-col>
 									<el-col :xs="10" :lg="14" :md="14" :sm="9" :xl="14" :pull="1">
-										<el-breadcrumb class="breadcrumb">
+										<a href="/">base</a>
+										<!-- 子应用 vue app -->
+										<a href="/vue">vue</a>
+										<div id="vue"></div>
+											<!-- 主应用容器 -->
+										<!-- <router-view></router-view> -->
+											<!-- 子应用容器 -->
+										<!-- <el-breadcrumb class="breadcrumb">
 											<el-breadcrumb-item :to="{ path: '/' }">homepage</el-breadcrumb-item>
-										</el-breadcrumb>
+										</el-breadcrumb> -->
 									</el-col>
 									<el-col :xs="12" :lg="9" :md="9" :sm="14" :xl="9">
 										<div class="right-box">

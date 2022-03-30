@@ -12,19 +12,19 @@ const routes = [
 		component: () => import(/* webpackChunkName: "about" */ '../views/login/index.vue'),
 	},
 	{
-	    path: '/home',
+	    path: '/index',
 	    name: '主页',
-	    component: Home,
-	    icon: 'home',
-	    meta: { hidden: false, title: '主页' },
-	    children: [
-			{
-				path: '/index',
-				name: 'Index',
-				meta: { title: '总览' },
+	    // component: Home,
+	    // icon: 'home',
+	    // meta: { hidden: false, title: '主页' },
+	    // children: [
+		// 	{
+		// 		path: '/index',
+		// 		name: 'Index',
+		// 		meta: { title: '总览' },
 				component: () => import(/* webpackChunkName: "product" */ '../views/index.vue')
-			}
-	    ]
+		// 	}
+	    // ]
 	},
 	// {
 	//     path: '/user/list',
