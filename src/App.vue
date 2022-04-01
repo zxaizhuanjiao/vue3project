@@ -1,12 +1,5 @@
 <template>
 	<div>
-		<!-- <a href="/index">base</a> -->
-		      <!-- 子应用 vue app -->
-		<!-- <a href="/vue">vue</a> -->
-		      <!-- 主应用容器 -->
-		<!-- <router-view></router-view> -->
-		      <!-- 子应用容器 -->
-		<!-- <div id="vue"></div> -->
 		<el-container>
 			<el-aside :width="isCollapse ? '64px' : '200px'" v-if="token">
 				<div style="display: flex;align-items: center;justify-content: center;height: 62px;background-color: #2f3447;color: #ffffff;">
@@ -23,14 +16,14 @@
 						 @select="selectMenuItem">
 					<!-- 一级菜单 -->
 					<template v-for="item in menuList">
-						<el-sub-menu :index="item.ID+''" v-if="item.children && item.children.length > 0" :key="item.ID">
+						<el-sub-menu :index="'/' + item.path" v-if="item.children && item.children.length > 0" :key="item.ID">
 							<!-- 一级菜单模板区域 -->
 							<template #title>
 								<el-icon><location /></el-icon>
 								<span>{{ item.meta.title }}</span>
 							</template>
 							<!-- 二级菜单 -->
-							<el-menu-item v-for="subItem in item.children" :index="subItem.ID+''" :key="subItem.ID">
+							<el-menu-item v-for="subItem in item.children" :index="'/' + subItem.path" :key="subItem.ID">
 								<template #title>
 									<el-icon><location /></el-icon>
 									<span>{{ subItem.meta.title }}</span>
@@ -39,7 +32,7 @@
 						</el-sub-menu>
 						<template v-else>
 							<!-- 一级菜单模板区域 -->
-							<el-menu-item :key="item.ID" :index="item.ID+''">
+							<el-menu-item :key="item.ID" :index="'/' + item.path">
 								<template #title>
 									<el-icon><location /></el-icon>
 									<span>{{ item.meta.title }}</span>
@@ -120,71 +113,30 @@
 	const store = useStore()
 
 	const active = ref('')
-	watch(route, () => {
-		active.value = route.path
-		// console.log(route.path)
-	})
+	// watch(route, (newVal, oldVal) => {
+	// 	console.log(newVal)
+	// 	console.log(oldVal)
+	// 	active.value = route.path
+	// })
 
 	const token = computed(() => {
 		return store.state.user.token;
 	})
-
-	// console.log($route.path)
 	
 	const transitionName = ref('slide-left')
 	const isCollapse = ref(false)
-	const initPage = () => {
-		active.value = route.path
-		// const screenWidth = document.body.clientWidth
-		// if (screenWidth < 1000) {
-		// 	isCollapse.value = !isCollapse.value
-		// }
-	}
-
-	initPage()
-
-	// onUnmounted(() => {
-	// 	emitter.off('collapse')
-	// 	})
 
 	const toggleCollapse = () => {
 		isCollapse.value = !isCollapse.value;
 	}
 	
 	const selectMenuItem = (index) => {
-		// console.log(index)
-		let tmprouter = ''
-		menuList.value.forEach((v, i) => {
-			if (v.ID == index) {
-				// console.log(v)
-				tmprouter = v
-			} else {
-				if (v.children && v.children.length > 0) {
-					v.children.forEach((sv, si) => {
-						if (sv.ID == index) {
-							// console.log(sv)
-							tmprouter = sv
-						}
-					})
-				}
-			}
-		})
-		// console.log(tmprouter)
-		router.push('/' + tmprouter.path)
+		router.push(index)
 	}
-	// const handleOpen = (index) => {
-	// 	console.log(route)
-	// }
 	
-	// const handleClose = () => {
-		
-	// }
-
 	const menuList = ref([])
 	const getMenuList = () => {
 		menuList.value = JSON.parse(localStorage.getItem('menuList'))
-		// console.log(JSON.parse(localStorage.getItem('menuList')))
-		// console.log(menuList.value)
 	}
 	getMenuList()
 	
