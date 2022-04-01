@@ -18,42 +18,35 @@
 				<el-menu class="el-menu-vertical-demo"
 						 :collapse="isCollapse"
 						 :collapse-transition="false"
-						 @open="handleOpen"
-						 @close="handleClose">
+						 :unique-opened="true"
+						 :default-active="route.path"
+						 @select="selectMenuItem">
 					<!-- 一级菜单 -->
-					<!-- <el-submenu index="1" v-for="item in menulist" :key="item.id">
-						
-					</el-submenu> -->
-					<el-sub-menu index="1">
-						<template #title>
-						<el-icon><location /></el-icon>
-						<span>Navigator One</span>
-						</template>
-						<el-menu-item-group>
-						<template #title><span>Group One</span></template>
-						<el-menu-item index="1-1">item one</el-menu-item>
-						<el-menu-item index="1-2">item two</el-menu-item>
-						</el-menu-item-group>
-						<el-menu-item-group title="Group Two">
-						<el-menu-item index="1-3">item three</el-menu-item>
-						</el-menu-item-group>
-						<el-sub-menu index="1-4">
-						<template #title><span>item four</span></template>
-						<el-menu-item index="1-4-1">item one</el-menu-item>
+					<template v-for="item in menuList">
+						<el-sub-menu :index="item.ID+''" v-if="item.children && item.children.length > 0" :key="item.ID">
+							<!-- 一级菜单模板区域 -->
+							<template #title>
+								<el-icon><location /></el-icon>
+								<span>{{ item.meta.title }}</span>
+							</template>
+							<!-- 二级菜单 -->
+							<el-menu-item v-for="subItem in item.children" :index="subItem.ID+''" :key="subItem.ID">
+								<template #title>
+									<el-icon><location /></el-icon>
+									<span>{{ subItem.meta.title }}</span>
+								</template>
+							</el-menu-item>
 						</el-sub-menu>
-					</el-sub-menu>
-					<el-menu-item index="2">
-						<el-icon><Menu /></el-icon>
-						<template #title>Navigator Two</template>
-					</el-menu-item>
-					<el-menu-item index="3" disabled>
-						<el-icon><document /></el-icon>
-						<template #title>Navigator Three</template>
-					</el-menu-item>
-					<el-menu-item index="4">
-						<el-icon><setting /></el-icon>
-						<template #title>Navigator Four</template>
-					</el-menu-item>
+						<template v-else>
+							<!-- 一级菜单模板区域 -->
+							<el-menu-item :key="item.ID" :index="item.ID+''">
+								<template #title>
+									<el-icon><location /></el-icon>
+									<span>{{ item.meta.title }}</span>
+								</template>
+                            </el-menu-item>
+						</template>		
+					</template>
 				</el-menu>
 			</el-aside>
 			<el-container>
@@ -74,7 +67,7 @@
 									</el-col>
 									<el-col :xs="10" :lg="14" :md="14" :sm="9" :xl="14" :pull="1">
 										<div class="breadcrumb">
-											<a href="/index">主应用base</a>
+											<a href="/dashboard">主应用base</a>
 											<a href="/vue">子应用vue</a>
 										</div>
 									</el-col>
@@ -118,35 +111,80 @@
 </template>
 
 <script setup>
-	import { computed, ref, onMounted, nextTick } from 'vue'
-	import { useRouter } from 'vue-router'
+	import { computed, ref, watch, nextTick } from 'vue'
+	import { useRouter, useRoute } from 'vue-router'
 	import { useStore } from 'vuex'
 	
 	const router = useRouter()
+	const route = useRoute()
 	const store = useStore()
+
+	const active = ref('')
+	watch(route, () => {
+		active.value = route.path
+		// console.log(route.path)
+	})
+
 	const token = computed(() => {
 		return store.state.user.token;
 	})
+
+	// console.log($route.path)
 	
 	const transitionName = ref('slide-left')
 	const isCollapse = ref(false)
+	const initPage = () => {
+		active.value = route.path
+		// const screenWidth = document.body.clientWidth
+		// if (screenWidth < 1000) {
+		// 	isCollapse.value = !isCollapse.value
+		// }
+	}
+
+	initPage()
+
+	// onUnmounted(() => {
+	// 	emitter.off('collapse')
+	// 	})
+
 	const toggleCollapse = () => {
 		isCollapse.value = !isCollapse.value;
 	}
 	
-	const handleOpen = () => {
-		
+	const selectMenuItem = (index) => {
+		// console.log(index)
+		let tmprouter = ''
+		menuList.value.forEach((v, i) => {
+			if (v.ID == index) {
+				// console.log(v)
+				tmprouter = v
+			} else {
+				if (v.children && v.children.length > 0) {
+					v.children.forEach((sv, si) => {
+						if (sv.ID == index) {
+							// console.log(sv)
+							tmprouter = sv
+						}
+					})
+				}
+			}
+		})
+		// console.log(tmprouter)
+		router.push('/' + tmprouter.path)
 	}
+	// const handleOpen = (index) => {
+	// 	console.log(route)
+	// }
 	
-	const handleClose = () => {
+	// const handleClose = () => {
 		
-	}
+	// }
 
 	const menuList = ref([])
 	const getMenuList = () => {
 		menuList.value = JSON.parse(localStorage.getItem('menuList'))
-		console.log(JSON.parse(localStorage.getItem('menuList')))
-		console.log(menuList.value)
+		// console.log(JSON.parse(localStorage.getItem('menuList')))
+		// console.log(menuList.value)
 	}
 	getMenuList()
 	
@@ -204,5 +242,9 @@
 		display: flex;
 		justify-content: flex-end;
 		align-items: center;
+	}
+
+	.el-side .el-menu {
+		border-right: none;
 	}
 </style>
