@@ -28,7 +28,7 @@ module.exports = {
 				// '^/api': ''
 			}
 		}
-	},
+	 },
     },
 	chainWebpack: config => {
 		// config.module

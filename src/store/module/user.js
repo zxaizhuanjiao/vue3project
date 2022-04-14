@@ -11,6 +11,13 @@ export const user =({
 
     setUserInfo(state, userInfo) {
         state.userInfo = userInfo
+    },
+
+    userLogout(state) {
+      console.log(state)
+      localStorage.clear();
+      state.userInfo = {};
+      state.token = ''
     }
   },
   actions: {

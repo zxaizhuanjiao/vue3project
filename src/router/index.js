@@ -9,62 +9,62 @@ const routes = [
 	{
 		path: '/login',
 		name: '登录页',
-		component: () => import('../views/login/index.vue'),
+		component: () => import('../view/login/index.vue'),
 	},
 	{
 	    path: '/dashboard',
 	    name: '首页',
-		component: () => import('../views/dashboard/index.vue')
+		component: () => import('../view/dashboard/index.vue')
 	},
 	{
 	    path: '/protocol',
 	    name: '协议审计',
-		component: () => import('../views/security/protocol/index.vue')
+		component: () => import('../view/security/protocol/index.vue')
 	},
 	{
 	    path: '/flow',
 	    name: '流量统计',
-		component: () => import('../views/security/flow/index.vue')
+		component: () => import('../view/security/flow/index.vue')
 	},
 	{
 	    path: '/logInfo',
 	    name: '事件信息',
-		component: () => import('../views/logInfo/index.vue')
+		component: () => import('../view/logInfo/index.vue')
 	},
 	{
 	    path: '/whiteList',
 	    name: '白名单',
-		component: () => import('../views/ruleMangement/whiteList/index.vue')
+		component: () => import('../view/ruleMangement/whiteList/index.vue')
 	},
 	{
 	    path: '/blackList',
 	    name: '黑名单',
-		component: () => import('../views/ruleMangement/blackList/index.vue')
+		component: () => import('../view/ruleMangement/blackList/index.vue')
 	},
 	{
 	    path: '/ipMacList',
 	    name: 'IP/MAC',
-		component: () => import('../views/ruleMangement/ipMacList/index.vue')
+		component: () => import('../view/ruleMangement/ipMacList/index.vue')
 	},
 	{
 	    path: '/authority',
 	    name: '角色管理',
-		component: () => import('../views/superAdmin/authority/authority.vue')
+		component: () => import('../view/superAdmin/authority/authority.vue')
 	},
 	{
 	    path: '/menu',
 	    name: '菜单管理',
-		component: () => import('../views/superAdmin/menu/menu.vue')
+		component: () => import('../view/superAdmin/menu/menu.vue')
 	},
 	{
 	    path: '/interface',
 	    name: 'api管理',
-		component: () => import('../views/superAdmin/api/api.vue')
+		component: () => import('../view/superAdmin/api/api.vue')
 	},
 	{
 	    path: '/user',
 	    name: '用户管理',
-		component: () => import('../views/superAdmin/user/user.vue')
+		component: () => import('../view/superAdmin/user/user.vue')
 	},
 ]
 
@@ -73,14 +73,38 @@ const router = createRouter({
 	routes
 })
 
+let asyncRouterFlag = 0
 router.beforeEach((to, from, next) => {
+	const token = store.state.user.token
+	// console.log(asyncRouterFlag)
 	if (to.path !== '/login') {
-		if (store.state.user.token) {
+		// console.log('非login')
+		if (token) {
+			// if (!asyncRouterFlag) {
+			// 	asyncRouterFlag++
+			// 	next()
+			// } else {
+			// 	next()
+			// }
 			next()
 		} else {
 			next('/login')
 		}
-	} else {
+	} else{
+		// console.log('login')
+		// if (token) {
+		// 	if (!asyncRouterFlag) {
+		// 		asyncRouterFlag++
+		// 		next({ path: '/dashboard' })
+		// 	  } else {
+		// 		next()
+		// 	  }
+		// 	// next({ path: '/dashboard' })
+		// }
+
+		// if (!token) {
+		// 	next()
+		// }
 		next()
 	}
 })

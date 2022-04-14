@@ -76,6 +76,7 @@
 						store.commit('user/setToken', res.data.token)
 						store.commit('user/setUserInfo', JSON.stringify(res.data.user))
 						localStorage.setItem("userInfo", JSON.stringify(res.data.user))
+						localStorage.setItem("token", res.data.token)
 						router.push('/dashboard')
 						getMenuListFunc()
 					}

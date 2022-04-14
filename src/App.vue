@@ -13,6 +13,7 @@
 						 :collapse-transition="false"
 						 :unique-opened="true"
 						 :default-active="route.path"
+						 :style="{ height: (screenHeight-64) + 'px' }"
 						 @select="selectMenuItem">
 					<!-- 一级菜单 -->
 					<template v-for="item in menuList">
@@ -60,8 +61,9 @@
 									</el-col>
 									<el-col :xs="10" :lg="14" :md="14" :sm="9" :xl="14" :pull="1">
 										<div class="breadcrumb">
-											<a href="/dashboard">主应用base</a>
-											<a href="/vue">子应用vue</a>
+											<a href="/dashboard">主应用</a>
+											<!-- <a href="/vue">子应用vue</a> -->
+											<a href="/audit">审计</a>
 										</div>
 									</el-col>
 									<el-col :xs="12" :lg="9" :md="9" :sm="14" :xl="9">
@@ -94,36 +96,82 @@
 				</el-header>
 				<el-main>
 					<!-- 主应用容器 -->
+					<!-- 主应用渲染区，用于挂载主应用路由触发的组件 -->
 					<router-view></router-view>
 					<!-- 子应用容器 -->
-					<div id="vue"></div>
+					<!-- <div id="vue"></div> -->
+					<div id="audit"></div>
 				</el-main>
 			</el-container>
+			<!-- <div id="audit"></div> -->
 		</el-container>
 	</div>
 </template>
 
 <script setup>
-	import { computed, ref, watch, nextTick } from 'vue'
-	import { useRouter, useRoute } from 'vue-router'
+	import { computed, ref, watch, nextTick, onMounted } from 'vue'
+	import { useRouter, useRoute, onBeforeRouteUpdate } from 'vue-router'
 	import { useStore } from 'vuex'
+	import action from './action'
 	
 	const router = useRouter()
 	const route = useRoute()
 	const store = useStore()
 
+	const screenHeight = ref('')
+	screenHeight.value = document.documentElement.clientHeight
+
 	const active = ref('')
-	// watch(route, (newVal, oldVal) => {
-	// 	console.log(newVal)
-	// 	console.log(oldVal)
-	// 	active.value = route.path
-	// })
 
 	const token = computed(() => {
 		return store.state.user.token;
 	})
+
+	// const hh = onMounted(() => {
+	// 	console.log('1111')
+	// })
+
+	const isChildren = ref(false)
+	const judgeRoute = watch(() => route.path,() => {
+		// console.log(store.state.user.token)
+		// console.log(route.path)
+		// console.log(route.path.indexOf('audit'))
+		action.onGlobalStateChange((state) => {
+				console.log('1111')
+                console.log(state)
+				state.menu.forEach((value, i) => {
+					value.path = 'audit/' + value.path
+					
+					if (value.children && value.children.length>0) {
+						value.children.forEach((svalue, si) => {
+							svalue.path = 'audit/' + svalue.path
+						})
+					}
+				})
+				menuList.value = state.menu
+            }, true);
+		if (route.path.indexOf('audit') > 0) {
+			console.log('子应用')
+			isChildren.value = true
+		} else {
+			console.log('主应用')
+			isChildren.value = false
+			getMenuList()
+		}
+		// if (!store.state.user.token) {
+		// 	router.push('/login')
+		// } else {
+		// 	 if (route.path == '/login') {
+		// 		router.push('/dashboard')
+		// 	} else {
+			
+		// 	}
+		// }
+	})
+
 	
-	const transitionName = ref('slide-left')
+
+	// const transitionName = ref('slide-left')
 	const isCollapse = ref(false)
 
 	const toggleCollapse = () => {
@@ -136,19 +184,37 @@
 	
 	const menuList = ref([])
 	const getMenuList = () => {
-		menuList.value = JSON.parse(localStorage.getItem('menuList'))
+		menuList.value = [
+        {
+     
+          key: 'Home',
+		  meta: {
+			  title: '主应用-主页'
+		  },
+          icon: 'el-icon-location',
+          path: 'dashboard'
+        },
+        {
+     
+          key: 'About',
+		  meta: {
+			  title: '主应用-关于'
+		  },
+          icon: 'el-icon-location',
+          path: 'protocol'
+        }
+      ]
+		// menuList.value = JSON.parse(localStorage.getItem('menuList'))
 	}
 	getMenuList()
 	
 	const logout = () => {
-		store.commit('user/setToken', '')
-		store.commit('user/setUserInfo', '')
-		localStorage.clear()
+		store.commit("user/userLogout")
 		router.push('/login')
 	}
 </script>
 
-<style>
+<style scoped>
 	body {
 		margin: 0 auto;
 	}
@@ -156,12 +222,13 @@
 		font-family: Avenir, Helvetica, Arial, sans-serif;
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
-		text-align: center;
+		/* text-align: center; */
 		color: #2c3e50;
 	}
 	.header-cont {
-		padding: 0 16px;
+		/* padding: 0 10px; */
 		background-color: #fff;
+		padding: 0 !important;
 	}
 	
 	.main-content {
@@ -181,7 +248,7 @@
 		line-height: 60px;
 		display: inline-block;
 		padding: 0;
-		/* margin-left: 80px; */
+		margin-left: 50px;
 		font-size: 16px;
 	}
 
